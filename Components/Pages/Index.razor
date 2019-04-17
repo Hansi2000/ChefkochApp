@@ -1,0 +1,77 @@
+﻿@page "/"
+@using ChefkochApp.Services
+@using System.Linq
+@inject ChefkochService chefkochservice
+
+<table>
+    <tr>
+        <td class="left-half">
+            <div class="block">
+                <div class="block-header">
+                    Rezepte
+                </div>
+                <ul>
+                    @foreach (ChefkochRecipe item in recipes)
+                    {
+                        <li class="block-item" onclick="@(e => ChangeRecipie(item.id))">
+                            <table>
+                                <tr>
+                                    <td class="block-item-image">
+                                        <img src="@($"https://img.chefkoch-cdn.de/rezepte/{item.id}/bilder/{item.previewImageId}/crop-256x170/")" />
+                                    </td>
+                                    <td class="block-item-text">@item.title</td>
+                                </tr>
+
+                            </table>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </td>
+        <td class="right-half">
+            @if (currentRecipes != null)
+            {
+                <div class="block">
+                    <div class="block-header">
+                        @currentRecipes.title
+                    </div>
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="block-ingridient">
+                                    <ul>
+                                        @foreach (ChefkochIngredient item in currentRecipes.ingredientGroups[0].ingredients)
+                                        {
+                                            <li>@($"{item.name} - {item.amount}{item.unit}")</li>
+                                        }
+                                    </ul>
+                                </div>
+                            </td>
+                            <td class="block-image-big">
+                                <img src="@($"https://img.chefkoch-cdn.de/ck.de/rezepte/56/668335/{currentRecipes.previewImageId}-420x280-fix-bild.jpg")" />
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="block-instructions">
+                        <p>@currentRecipes.instructions</p>
+                    </div>
+                </div>
+            }
+        </td>
+    </tr>
+</table>
+
+@functions {
+    private List<ChefkochRecipe> recipes;
+    private ChefkochRecipe currentRecipes = null;
+
+    protected override void OnInit()
+    {
+        recipes = chefkochservice.GetData();
+    }
+
+    private void ChangeRecipie(string id)
+    {
+        currentRecipes = chefkochservice.GetRecipie(id);
+    }
+}

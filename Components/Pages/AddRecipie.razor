@@ -1,0 +1,28 @@
+﻿@page "/AddRecipie"
+@using ChefkochApp.Services
+@using System.ComponentModel.DataAnnotations;
+@inject ChefkochService chefkochservice
+
+<EditForm Model="@exampleModel" OnValidSubmit="@OnSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText id="name" bind-Value="@exampleModel.ID" />
+
+    <button type="submit" class="btn btn-primary">Rezept hinzufügen</button>
+</EditForm>
+
+@functions {
+    private ExampleModel exampleModel = new ExampleModel();
+
+    private void OnSubmit()
+    {
+        chefkochservice.AddRecipie(exampleModel.ID);
+    }
+
+    public class ExampleModel
+    {
+        [Required]
+        public string ID { get; set; }
+    }
+}
